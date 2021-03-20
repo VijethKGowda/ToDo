@@ -82,7 +82,7 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                       <textarea
                         id="descrition"
                         name="about"
-                        rows="3"
+                        rows={5}
                         onChange={(e) => {
                           setDescription(e.target.value);
                         }}
