@@ -16,15 +16,27 @@ const Modal: React.FunctionComponent<ModalProps> = ({
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
-  const [date, setDate] = useState("");
+  const [dueDate, setDueDate] = useState("");
+
+  const priorityData = ["Low", "Medium", "High"];
+
+  let date = new Date();
+  let today =
+    date.getFullYear() +
+    "-" +
+    String(date.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(date.getDate()).padStart(2, "0");
+
   const submit = () => {
     setTableValue((prev) => [
       ...prev,
       {
         summary: summary,
-        description: description,
         priority: priority,
-        date: date,
+        created: today,
+        due: dueDate,
+        description: description,
       },
     ]);
     setShowModal(false);
@@ -106,7 +118,7 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                         id="due_date"
                         autoComplete="given-name"
                         onChange={(e) => {
-                          setDate(e.target.value);
+                          setDueDate(e.target.value);
                         }}
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                       />
@@ -117,7 +129,7 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                         htmlFor="priority"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        Group By
+                        Priority
                       </label>
                       <select
                         id="priority"
@@ -128,9 +140,9 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                           setPriority(e.target.value);
                         }}
                       >
-                        <option>Low</option>
-                        <option>Medium</option>
-                        <option>High</option>
+                        {priorityData.map((pri) => (
+                          <option key={pri}>{pri}</option>
+                        ))}
                       </select>
                     </div>
                   </div>

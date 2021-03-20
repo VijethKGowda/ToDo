@@ -3,6 +3,7 @@ import Edit from "../public/edit.svg";
 import Trash from "../public/trash.svg";
 import Modal from "./Modal";
 import { noop } from "../utils/";
+import DeleteModal from "./DeleteModal";
 
 type TableProps = {
   setTableValue?: (string) => void;
@@ -14,7 +15,16 @@ const Table: React.FunctionComponent<TableProps> = ({
   tableValue,
 }) => {
   const [showModal, setShowModal] = useState(false);
-  console.log(showModal);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const tableHeading = ["Summary", "Priority", "Created On", "Due By"];
+
+  const [deleteItem, setDeleteItem] = useState("");
+
+  const onDelete = () => {
+    console.log("deleted", deleteItem);
+    setShowDeleteModal(false);
+  };
+
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -23,30 +33,15 @@ const Table: React.FunctionComponent<TableProps> = ({
             <table className={`min-w-full divide-y divide-gray-200 `}>
               <thead className="bg-gray-50">
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left cursor-pointer text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Summary
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left cursor-pointer text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Priority
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left cursor-pointer text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Created On
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left cursor-pointer text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Due By
-                  </th>
+                  {tableHeading.map((table) => (
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left cursor-pointer text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      key={table}
+                    >
+                      {table}
+                    </th>
+                  ))}
                   <td
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -55,96 +50,52 @@ const Table: React.FunctionComponent<TableProps> = ({
                   </td>
                 </tr>
               </thead>
+
               <tbody className="bg-white divide-y divide-gray-200">
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap">Purchase Note</td>
-                  <td className="px-6 py-4 whitespace-nowrap">Low</td>
-                  <td className="px-6 py-4 whitespace-nowrap">20-12-2020</td>
-                  <td className="px-6 py-4 whitespace-nowrap">21-12-2020</td>
-                  <td className="px-6 py-4 flex items-center">
-                    <button
-                      onClick={() => {
-                        setShowModal(true);
-                      }}
-                      type="button"
-                      className="mr-3 inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      <Edit />
-                    </button>
-                    <button
-                      type="button"
-                      className="mr-3 px-3 py-2 border text-white border-gray-300 rounded-md shadow-sm text-sm bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    >
-                      Done
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
-                      <Trash />
-                    </button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap">Purchase Note</td>
-                  <td className="px-6 py-4 whitespace-nowrap">Medium</td>
-                  <td className="px-6 py-4 whitespace-nowrap">20-12-2020</td>
-                  <td className="px-6 py-4 whitespace-nowrap">21-12-2020</td>
-                  <td className="px-6 py-4 flex items-center">
-                    <button
-                      onClick={() => {
-                        setShowModal(true);
-                      }}
-                      type="button"
-                      className="mr-3 inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      <Edit />
-                    </button>
-                    <button
-                      type="button"
-                      className="mr-3 px-3 py-2 border text-white border-gray-300 rounded-md shadow-sm text-sm bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    >
-                      Done
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
-                      <Trash />
-                    </button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap">Purchase Note</td>
-                  <td className="px-6 py-4 whitespace-nowrap">High</td>
-                  <td className="px-6 py-4 whitespace-nowrap">20-12-2020</td>
-                  <td className="px-6 py-4 whitespace-nowrap">21-12-2020</td>
-                  <td className="px-6 py-4 flex items-center">
-                    <button
-                      onClick={() => {
-                        setShowModal(true);
-                      }}
-                      type="button"
-                      className="mr-3 inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      <Edit />
-                    </button>
-                    <button
-                      type="button"
-                      className="mr-3 px-3 py-2 border text-white border-gray-300 rounded-md shadow-sm text-sm bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    >
-                      Done
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
-                      <Trash />
-                    </button>
-                  </td>
-                </tr>
+                {tableValue.map((tab, index) => {
+                  console.log(tab);
+                  return (
+                    <tr key={tab.summary + index}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {tab.summary}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {tab.priority}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {tab.created}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">{tab.due}</td>
+                      <td className="px-6 py-4 flex items-center">
+                        <button
+                          onClick={() => {
+                            setShowModal(true);
+                          }}
+                          type="button"
+                          className="mr-3 inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                          <Edit />
+                        </button>
+                        <button
+                          type="button"
+                          className="mr-3 px-3 py-2 border text-white border-gray-300 rounded-md shadow-sm text-sm bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        >
+                          Done
+                        </button>
+                        <button
+                          type="button"
+                          className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                          onClick={() => {
+                            setShowDeleteModal(true);
+                            setDeleteItem(tab.summary);
+                          }}
+                        >
+                          <Trash />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -156,6 +107,12 @@ const Table: React.FunctionComponent<TableProps> = ({
           button={"Edit"}
           setShowModal={setShowModal}
           setTableValue={setTableValue}
+        />
+      ) : null}
+      {showDeleteModal ? (
+        <DeleteModal
+          onDelete={onDelete}
+          setShowDeleteModal={setShowDeleteModal}
         />
       ) : null}
     </div>
