@@ -220,7 +220,7 @@ const Table: React.FunctionComponent<TableProps> = ({
                       >
                         <tr>
                           <td></td>
-                          <td>
+                          <td className="px-6 py-4 whitespace-nowrap">
                             {groupBy === "priority" ? (
                               <span
                                 key={grp.key}
@@ -230,7 +230,7 @@ const Table: React.FunctionComponent<TableProps> = ({
                               </span>
                             ) : null}
                           </td>
-                          <td>
+                          <td className="px-6 py-4 whitespace-nowrap">
                             {groupBy === "created" ? (
                               <span
                                 key={grp.key}
@@ -240,7 +240,7 @@ const Table: React.FunctionComponent<TableProps> = ({
                               </span>
                             ) : null}
                           </td>
-                          <td>
+                          <td className="px-6 py-4 whitespace-nowrap">
                             {groupBy === "due" ? (
                               <span
                                 key={grp.key}
