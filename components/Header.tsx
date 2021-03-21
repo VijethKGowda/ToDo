@@ -11,6 +11,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({
   setTableValue = noop,
 }) => {
   const [showModal, setShowModal] = useState(false);
+
   return (
     <>
       <div className="flex justify-between">

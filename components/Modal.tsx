@@ -7,6 +7,7 @@ type ModalProps = {
   button: string;
   setTableValue?: (string) => void;
   editValue?: object;
+  tableValue?: any[];
 };
 const Modal: React.FunctionComponent<ModalProps> = ({
   setShowModal = noop,
@@ -14,6 +15,7 @@ const Modal: React.FunctionComponent<ModalProps> = ({
   button,
   setTableValue = noop,
   editValue,
+  tableValue,
 }) => {
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
@@ -22,6 +24,15 @@ const Modal: React.FunctionComponent<ModalProps> = ({
   const [valid, setValid] = useState(true);
   const [progress, setProgress] = useState("in_progress");
   const priorityData = ["None", "Low", "Medium", "High"];
+
+  const [tempEditValue, setTempEditValue] = useState({
+    summary: "",
+    priority: "",
+    created: "",
+    due: "",
+    description: "",
+    progress: "",
+  });
   let date = new Date();
   let today =
     date.getFullYear() +
@@ -32,17 +43,32 @@ const Modal: React.FunctionComponent<ModalProps> = ({
 
   useEffect(() => {
     if (editValue) {
-      setSummary(editValue?.summary);
-      setDescription(editValue?.description);
-      setPriority(editValue?.priority);
-      setDueDate(editValue?.due);
-      setProgress(editValue?.progress);
+      setSummary(editValue["summary"]);
+      setDescription(editValue["description"]);
+      setPriority(editValue["priority"]);
+      setDueDate(editValue["due"]);
+      setProgress(editValue["progress"]);
     }
   }, [editValue]);
 
   const submit = () => {
     if (!summary || !dueDate || !description) setValid(false);
-    else {
+    else if (editValue) {
+      const temp = tableValue.map((tab) => {
+        if (tab.summary == editValue["summary"]) {
+          return {
+            summary: summary,
+            priority: priority,
+            created: today,
+            due: dueDate,
+            description: description,
+            progress: progress,
+          };
+        } else return tab;
+      });
+      setShowModal(false);
+      setTableValue(temp);
+    } else {
       setTableValue((prev) => [
         ...prev,
         {

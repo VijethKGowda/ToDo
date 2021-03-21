@@ -79,7 +79,7 @@ const Table: React.FunctionComponent<TableProps> = ({
     setFilteredValue(filtered);
   }, [tableValue, selectedTab]);
 
-  useEffect(() => {}, [filteredValue]);
+  useEffect(() => {}, [filteredValue, tableValue]);
 
   const sort = (table) => {
     if (table === "summary") {
@@ -261,6 +261,7 @@ const Table: React.FunctionComponent<TableProps> = ({
         <Modal
           title={"Edit Task"}
           button={"Edit"}
+          tableValue={tableValue}
           editValue={editValue}
           setShowModal={setShowModal}
           setTableValue={setTableValue}
