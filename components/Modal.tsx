@@ -127,7 +127,9 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                         !valid && !summary ? "ring-2 ring-red-400" : null
                       } mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md`}
                     />
-                    {!valid && !summary ? <span>invalid</span> : null}
+                    {!valid && !summary ? (
+                      <span className="text-xs text-red-400">Invalid</span>
+                    ) : null}
                   </div>
 
                   <div className="mt-2 w-full">
@@ -152,7 +154,9 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                         placeholder="Description of your task"
                       ></textarea>
                     </div>
-                    {!valid && !description ? <span>invalid</span> : null}
+                    {!valid && !description ? (
+                      <span className="text-xs text-red-400">Invalid</span>
+                    ) : null}
                   </div>
 
                   <div className="flex flex-col lg:flex-row md:flex-row sm:flex-col gap-2">
@@ -175,7 +179,9 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                           !valid && !dueDate ? "ring-2 ring-red-400" : null
                         } mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md`}
                       />
-                      {!valid && !dueDate ? <span>invalid</span> : null}
+                      {!valid && !dueDate ? (
+                        <span className="text-xs text-red-400">Invalid</span>
+                      ) : null}
                     </div>
 
                     <div className="mt-2 w-full lg:w-1/2 md:w-full sm:w-full">
