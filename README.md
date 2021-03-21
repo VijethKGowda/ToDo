@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+# ToDo App for Maxxton
+
+![version](https://img.shields.io/badge/version-1.0.0-blue.svg) ![license](https://img.shields.io/badge/license-MIT-blue.svg)</a>
+
+## 🎏 Live Site: [fullthrottle-test](to-do-sandy.vercel.app)
+
 ## Getting Started
 
 First, run the development server:
