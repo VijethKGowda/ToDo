@@ -15,8 +15,10 @@ const Modal: React.FunctionComponent<ModalProps> = ({
 }) => {
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("");
+  const [priority, setPriority] = useState("Low");
   const [dueDate, setDueDate] = useState("");
+
+  const [valid, setValid] = useState(true);
 
   const priorityData = ["Low", "Medium", "High"];
 
@@ -29,18 +31,22 @@ const Modal: React.FunctionComponent<ModalProps> = ({
     String(date.getDate()).padStart(2, "0");
 
   const submit = () => {
-    setTableValue((prev) => [
-      ...prev,
-      {
-        summary: summary,
-        priority: priority,
-        created: today,
-        due: dueDate,
-        description: description,
-      },
-    ]);
-    setShowModal(false);
+    if (!summary || !dueDate || !description) setValid(false);
+    else {
+      setTableValue((prev) => [
+        ...prev,
+        {
+          summary: summary,
+          priority: priority,
+          created: today,
+          due: dueDate,
+          description: description,
+        },
+      ]);
+      setShowModal(false);
+    }
   };
+
   return (
     <>
       <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -75,33 +81,41 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                       type="text"
                       name="summary"
                       id="summary"
+                      required={true}
                       autoComplete="given-name"
                       onChange={(e) => {
                         setSummary(e.target.value);
                       }}
-                      className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      className={`${
+                        !valid && !summary ? "ring-2 ring-red-400" : null
+                      } mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md`}
                     />
+                    {!valid && !summary ? <span>invalid</span> : null}
                   </div>
 
                   <div className="mt-2 w-full">
                     <label
-                      htmlFor="descrition"
+                      htmlFor="description"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Description
                     </label>
                     <div className="mt-1">
                       <textarea
-                        id="descrition"
+                        id="description"
                         name="about"
+                        required
                         rows={5}
                         onChange={(e) => {
                           setDescription(e.target.value);
                         }}
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className={`${
+                          !valid && !description ? "ring-2 ring-red-400" : null
+                        } shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md`}
                         placeholder="Description of your task"
                       ></textarea>
                     </div>
+                    {!valid && !description ? <span>invalid</span> : null}
                   </div>
 
                   <div className="flex flex-col lg:flex-row md:flex-row sm:flex-col gap-2">
@@ -116,12 +130,16 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                         type="date"
                         name="due_date"
                         id="due_date"
+                        required
                         autoComplete="given-name"
                         onChange={(e) => {
                           setDueDate(e.target.value);
                         }}
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className={`${
+                          !valid && !dueDate ? "ring-2 ring-red-400" : null
+                        } mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md`}
                       />
+                      {!valid && !dueDate ? <span>invalid</span> : null}
                     </div>
 
                     <div className="mt-2 w-full lg:w-1/2 md:w-full sm:w-full">
