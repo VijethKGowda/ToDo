@@ -6,16 +6,33 @@ import { noop } from "../utils/";
 type TabsProps = {
   setTableValue?: (string) => void;
   tableValue?: any[];
+  groupBy?: string;
+  search?: string;
 };
 
 const Tabs: React.FunctionComponent<TabsProps> = ({
   setTableValue = noop,
   tableValue,
+  groupBy,
+  search,
 }) => {
-  const [seleceted, setSeleceted] = useState("All");
+  const [selected, setSelected] = useState("");
+  const [selectedStyle, setSelectedStyle] = useState("All");
   const style = "border-t border-r border-l -mb-px bg-white text-indigo-600";
-
-  const tabData = ["All", "Pending", "Completed"];
+  const tabData = [
+    {
+      Title: "All",
+      Value: "",
+    },
+    {
+      Title: "Pending",
+      Value: "in_progress",
+    },
+    {
+      Title: "Completed",
+      Value: "done",
+    },
+  ];
 
   return (
     <div className="rounded w-full mx-auto mt-12">
@@ -23,18 +40,25 @@ const Tabs: React.FunctionComponent<TabsProps> = ({
         {tabData.map((tab) => (
           <li
             className={`px-4  font-normal py-2 rounded-t cursor-pointer ${
-              seleceted === tab ? style : "text-gray-800"
+              selectedStyle === tab.Title ? style : "text-gray-800"
             }`}
             onClick={() => {
-              setSeleceted(tab);
+              setSelectedStyle(tab.Title);
+              setSelected(tab.Value);
             }}
-            key={tab}
+            key={tab.Title}
           >
-            {tab}
+            {tab.Title}
           </li>
         ))}
       </ul>
-      <Table setTableValue={setTableValue} tableValue={tableValue} />
+      <Table
+        setTableValue={setTableValue}
+        tableValue={tableValue}
+        groupBy={groupBy}
+        search={search}
+        selectedTab={selected}
+      />
     </div>
   );
 };

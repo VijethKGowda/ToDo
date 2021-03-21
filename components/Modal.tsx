@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { noop } from "../utils/";
 
 type ModalProps = {
@@ -6,22 +6,22 @@ type ModalProps = {
   title: string;
   button: string;
   setTableValue?: (string) => void;
+  editValue?: object;
 };
 const Modal: React.FunctionComponent<ModalProps> = ({
   setShowModal = noop,
   title,
   button,
   setTableValue = noop,
+  editValue,
 }) => {
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("Low");
+  const [priority, setPriority] = useState("None");
   const [dueDate, setDueDate] = useState("");
-
   const [valid, setValid] = useState(true);
-
-  const priorityData = ["Low", "Medium", "High"];
-
+  const [progress, setProgress] = useState("in_progress");
+  const priorityData = ["None", "Low", "Medium", "High"];
   let date = new Date();
   let today =
     date.getFullYear() +
@@ -29,6 +29,16 @@ const Modal: React.FunctionComponent<ModalProps> = ({
     String(date.getMonth() + 1).padStart(2, "0") +
     "-" +
     String(date.getDate()).padStart(2, "0");
+
+  useEffect(() => {
+    if (editValue) {
+      setSummary(editValue?.summary);
+      setDescription(editValue?.description);
+      setPriority(editValue?.priority);
+      setDueDate(editValue?.due);
+      setProgress(editValue?.progress);
+    }
+  }, [editValue]);
 
   const submit = () => {
     if (!summary || !dueDate || !description) setValid(false);
@@ -41,6 +51,7 @@ const Modal: React.FunctionComponent<ModalProps> = ({
           created: today,
           due: dueDate,
           description: description,
+          progress: progress,
         },
       ]);
       setShowModal(false);
@@ -81,7 +92,7 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                       type="text"
                       name="summary"
                       id="summary"
-                      required={true}
+                      value={summary}
                       autoComplete="given-name"
                       onChange={(e) => {
                         setSummary(e.target.value);
@@ -104,7 +115,7 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                       <textarea
                         id="description"
                         name="about"
-                        required
+                        value={description}
                         rows={5}
                         onChange={(e) => {
                           setDescription(e.target.value);
@@ -130,8 +141,7 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                         type="date"
                         name="due_date"
                         id="due_date"
-                        required
-                        autoComplete="given-name"
+                        value={dueDate}
                         onChange={(e) => {
                           setDueDate(e.target.value);
                         }}
@@ -153,6 +163,7 @@ const Modal: React.FunctionComponent<ModalProps> = ({
                         id="priority"
                         name="priority"
                         autoComplete="priority"
+                        value={priority}
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         onChange={(e) => {
                           setPriority(e.target.value);

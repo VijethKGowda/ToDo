@@ -1,9 +1,14 @@
 import { useState } from "react";
 
-const Filter: React.FunctionComponent = () => {
-  const [selected, setSelected] = useState("None");
-  const [search, setSearch] = useState("");
+type FilterProps = {
+  setSearch: (string) => void;
+  setGroupBy?: (string) => void;
+};
 
+const Filter: React.FunctionComponent<FilterProps> = ({
+  setSearch,
+  setGroupBy,
+}) => {
   const groupDate = ["None", "Created On", "Pending On", "Priority"];
 
   return (
@@ -21,7 +26,7 @@ const Filter: React.FunctionComponent = () => {
           autoComplete="country"
           className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           onChange={(e) => {
-            setSelected(e.target.value);
+            setGroupBy(e.target.value);
           }}
         >
           {groupDate.map((group) => (
