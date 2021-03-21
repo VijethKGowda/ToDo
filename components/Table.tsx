@@ -190,6 +190,7 @@ const Table: React.FunctionComponent<TableProps> = ({
                     <th
                       scope="col"
                       className="px-6 py-3 text-left cursor-pointer text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: "150px" }}
                       key={table.Value}
                       onClick={() => {
                         sort(table.Value);
@@ -224,7 +225,7 @@ const Table: React.FunctionComponent<TableProps> = ({
                             {groupBy === "priority" ? (
                               <span
                                 key={grp.key}
-                                className="px-6 py-3 text-sm font-bold text-left text-indigo-500 uppercase tracking-wider"
+                                className="text-sm font-bold text-left text-indigo-500 uppercase tracking-wider"
                               >
                                 {grp.key}
                               </span>
@@ -234,7 +235,7 @@ const Table: React.FunctionComponent<TableProps> = ({
                             {groupBy === "created" ? (
                               <span
                                 key={grp.key}
-                                className="px-6 py-3 text-sm font-bold text-left text-indigo-500 uppercase tracking-wider"
+                                className="text-sm font-bold text-left text-indigo-500 uppercase tracking-wider"
                               >
                                 {grp.key}
                               </span>
@@ -244,7 +245,7 @@ const Table: React.FunctionComponent<TableProps> = ({
                             {groupBy === "due" ? (
                               <span
                                 key={grp.key}
-                                className="px-6 py-3 text-sm font-bold text-left text-indigo-500 uppercase tracking-wider"
+                                className="text-sm font-bold text-left text-indigo-500 uppercase tracking-wider"
                               >
                                 {grp.key}
                               </span>
