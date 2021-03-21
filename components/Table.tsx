@@ -46,7 +46,6 @@ const Table: React.FunctionComponent<TableProps> = ({
   ];
 
   const onDelete = () => {
-    console.log("deleted", deleteItem);
     setShowDeleteModal(false);
     setTableValue(tableValue.filter((item) => item.summary !== deleteItem));
   };
