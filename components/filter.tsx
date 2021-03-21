@@ -9,7 +9,24 @@ const Filter: React.FunctionComponent<FilterProps> = ({
   setSearch,
   setGroupBy,
 }) => {
-  const groupDate = ["None", "Created On", "Pending On", "Priority"];
+  const groupDate = [
+    {
+      Title: "None",
+      Value: "",
+    },
+    {
+      Title: "Priority",
+      Value: "priority",
+    },
+    {
+      Title: "Created On",
+      Value: "created",
+    },
+    {
+      Title: "Due On",
+      Value: "due",
+    },
+  ];
 
   return (
     <div className="flex">
@@ -30,7 +47,9 @@ const Filter: React.FunctionComponent<FilterProps> = ({
           }}
         >
           {groupDate.map((group) => (
-            <option key={group}>{group}</option>
+            <option key={group.Value} value={group.Value}>
+              {group.Title}
+            </option>
           ))}
         </select>
       </div>
