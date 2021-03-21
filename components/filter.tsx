@@ -23,7 +23,7 @@ const Filter: React.FunctionComponent<FilterProps> = ({
       Value: "created",
     },
     {
-      Title: "Due On",
+      Title: "Due By",
       Value: "due",
     },
   ];

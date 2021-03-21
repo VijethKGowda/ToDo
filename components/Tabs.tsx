@@ -8,6 +8,7 @@ type TabsProps = {
   tableValue?: any[];
   groupBy?: string;
   search?: string;
+  setGroupBy?: (string) => void;
 };
 
 const Tabs: React.FunctionComponent<TabsProps> = ({
@@ -15,6 +16,7 @@ const Tabs: React.FunctionComponent<TabsProps> = ({
   tableValue,
   groupBy,
   search,
+  setGroupBy,
 }) => {
   const [selected, setSelected] = useState("");
   const [selectedStyle, setSelectedStyle] = useState("All");
@@ -58,6 +60,7 @@ const Tabs: React.FunctionComponent<TabsProps> = ({
         groupBy={groupBy}
         search={search}
         selectedTab={selected}
+        setGroupBy={setGroupBy}
       />
     </div>
   );

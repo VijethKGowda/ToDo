@@ -4,6 +4,7 @@ import Trash from "../public/trash.svg";
 import Modal from "./Modal";
 import { noop } from "../utils/";
 import DeleteModal from "./DeleteModal";
+import UpDown from "../public/upDown.svg";
 
 type TableProps = {
   setTableValue?: (string) => void;
@@ -11,6 +12,7 @@ type TableProps = {
   groupBy: string;
   search: string;
   selectedTab: string;
+  setGroupBy?: (string) => void;
 };
 
 const Table: React.FunctionComponent<TableProps> = ({
@@ -19,13 +21,18 @@ const Table: React.FunctionComponent<TableProps> = ({
   groupBy,
   search,
   selectedTab,
+  setGroupBy,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editValue, SetEditValue] = useState({});
   const [deleteItem, setDeleteItem] = useState("");
   const [filteredValue, setFilteredValue] = useState(tableValue);
-  const [sortOrder, setSortOrder] = useState(true);
+
+  const [groupByValue, setGroupByValue] = useState("");
+  const [groupByTable, setGroupByTable] = useState([]);
+
+  const [sortOrder, setSortOrder] = useState(false);
   const tableHeading = [
     {
       Title: "Summary",
@@ -70,12 +77,16 @@ const Table: React.FunctionComponent<TableProps> = ({
       );
     });
     setFilteredValue(filtered);
+    setGroupByValue("");
+    setGroupBy("");
   }, [search, tableValue]);
 
   useEffect(() => {
     const filtered = tableValue.filter((fil) => {
       return fil.progress.toLowerCase().includes(selectedTab.toLowerCase());
     });
+    setGroupByValue("");
+    setGroupBy("");
     setFilteredValue(filtered);
   }, [tableValue, selectedTab]);
 
@@ -134,7 +145,38 @@ const Table: React.FunctionComponent<TableProps> = ({
         return 0;
       });
     }
+    setGroupByValue("");
+    setGroupBy("");
   };
+
+  const group = function groupByArray(xs, key, sortKey) {
+    return xs.reduce(function (rv, x) {
+      let v = key instanceof Function ? key(x) : x[key];
+      let el = rv.find((r) => r && r.key === v);
+
+      if (el) {
+        el.values.push(x);
+        el.values.sort(function (a, b) {
+          return a[sortKey]
+            .toLowerCase()
+            .localeCompare(b[sortKey].toLowerCase());
+        });
+      } else {
+        rv.push({ key: v, values: [x] });
+      }
+
+      return rv;
+    }, []);
+  };
+
+  useEffect(() => {
+    setGroupByValue(groupBy);
+  }, [groupBy]);
+
+  useEffect(() => {
+    const grp = group(tableValue, groupByValue, "summary");
+    setGroupByTable(grp);
+  }, [groupByValue]);
 
   return (
     <div className="flex flex-col">
@@ -154,7 +196,9 @@ const Table: React.FunctionComponent<TableProps> = ({
                         setSortOrder(!sortOrder);
                       }}
                     >
-                      {table.Title}
+                      <div className="flex justify-between">
+                        {table.Title} <UpDown />
+                      </div>
                     </th>
                   ))}
                   <td
@@ -166,93 +210,225 @@ const Table: React.FunctionComponent<TableProps> = ({
                 </tr>
               </thead>
 
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredValue.map((tab, index) => {
-                  return (
-                    <tr key={tab.summary + index}>
-                      <td
-                        className={`px-6 py-4 whitespace-nowrap ${
-                          tab.progress == "done"
-                            ? "line-through text-green-700"
-                            : ""
-                        } `}
+              {groupByValue ? (
+                <>
+                  {groupByTable.map((grp) => {
+                    return (
+                      <tbody
+                        key={grp.key}
+                        className="bg-white divide-y divide-gray-200"
                       >
-                        {tab.summary}
-                      </td>
-                      <td
-                        className={`px-6 py-4 whitespace-nowrap ${
-                          tab.progress == "done"
-                            ? "line-through text-green-700"
-                            : ""
-                        } `}
-                      >
-                        {tab.priority}
-                      </td>
-                      <td
-                        className={`px-6 py-4 whitespace-nowrap ${
-                          tab.progress == "done"
-                            ? "line-through text-green-700"
-                            : ""
-                        } `}
-                      >
-                        {tab.created}
-                      </td>
-                      <td
-                        className={`px-6 py-4 whitespace-nowrap ${
-                          tab.progress == "done"
-                            ? "line-through text-green-700"
-                            : ""
-                        } `}
-                      >
-                        {tab.due}
-                      </td>
-                      <td className="px-6 py-4 flex items-center">
-                        <button
-                          onClick={() => {
-                            SetEditValue(tab);
-                            setShowModal(true);
-                          }}
-                          type="button"
-                          className="mr-3 inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        <tr>
+                          <td></td>
+                          <td>
+                            {groupBy === "priority" ? (
+                              <span
+                                key={grp.key}
+                                className="px-6 py-3 text-sm font-bold text-left text-indigo-500 uppercase tracking-wider"
+                              >
+                                {grp.key}
+                              </span>
+                            ) : null}
+                          </td>
+                          <td>
+                            {groupBy === "created" ? (
+                              <span
+                                key={grp.key}
+                                className="px-6 py-3 text-sm font-bold text-left text-indigo-500 uppercase tracking-wider"
+                              >
+                                {grp.key}
+                              </span>
+                            ) : null}
+                          </td>
+                          <td>
+                            {groupBy === "due" ? (
+                              <span
+                                key={grp.key}
+                                className="px-6 py-3 text-sm font-bold text-left text-indigo-500 uppercase tracking-wider"
+                              >
+                                {grp.key}
+                              </span>
+                            ) : null}
+                          </td>
+                        </tr>
+                        {grp.values.map((tab, index) => {
+                          return (
+                            <tr key={tab.summary + index}>
+                              <td
+                                className={`px-6 py-4 whitespace-nowrap ${
+                                  tab.progress == "done"
+                                    ? "line-through text-green-700"
+                                    : ""
+                                } `}
+                              >
+                                {tab.summary}
+                              </td>
+                              <td
+                                className={`px-6 py-4 whitespace-nowrap ${
+                                  tab.progress == "done"
+                                    ? "line-through text-green-700"
+                                    : ""
+                                } `}
+                              >
+                                {tab.priority}
+                              </td>
+                              <td
+                                className={`px-6 py-4 whitespace-nowrap ${
+                                  tab.progress == "done"
+                                    ? "line-through text-green-700"
+                                    : ""
+                                } `}
+                              >
+                                {tab.created}
+                              </td>
+                              <td
+                                className={`px-6 py-4 whitespace-nowrap ${
+                                  tab.progress == "done"
+                                    ? "line-through text-green-700"
+                                    : ""
+                                } `}
+                              >
+                                {tab.due}
+                              </td>
+                              <td className="px-6 py-4 flex items-center">
+                                <button
+                                  onClick={() => {
+                                    SetEditValue(tab);
+                                    setShowModal(true);
+                                  }}
+                                  type="button"
+                                  className="mr-3 inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                  <Edit />
+                                </button>
+                                {tab.progress == "in_progress" ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      changeStatus(tab, index, "done");
+                                    }}
+                                    className="mr-3 px-3 py-2 border w-20 text-white border-gray-300 rounded-md shadow-sm text-sm bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                  >
+                                    Done
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      changeStatus(tab, index, "in_progress");
+                                    }}
+                                    className="mr-3 px-3 py-2 border w-20 text-white border-gray-300 rounded-md shadow-sm text-sm bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                                  >
+                                    Re open
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                  onClick={() => {
+                                    setShowDeleteModal(true);
+                                    setDeleteItem(tab.summary);
+                                  }}
+                                >
+                                  <Trash />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    );
+                  })}
+                </>
+              ) : (
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredValue.map((tab, index) => {
+                    return (
+                      <tr key={tab.summary + index}>
+                        <td
+                          className={`px-6 py-4 whitespace-nowrap ${
+                            tab.progress == "done"
+                              ? "line-through text-green-700"
+                              : ""
+                          } `}
                         >
-                          <Edit />
-                        </button>
-                        {tab.progress == "in_progress" ? (
+                          {tab.summary}
+                        </td>
+                        <td
+                          className={`px-6 py-4 whitespace-nowrap ${
+                            tab.progress == "done"
+                              ? "line-through text-green-700"
+                              : ""
+                          } `}
+                        >
+                          {tab.priority}
+                        </td>
+                        <td
+                          className={`px-6 py-4 whitespace-nowrap ${
+                            tab.progress == "done"
+                              ? "line-through text-green-700"
+                              : ""
+                          } `}
+                        >
+                          {tab.created}
+                        </td>
+                        <td
+                          className={`px-6 py-4 whitespace-nowrap ${
+                            tab.progress == "done"
+                              ? "line-through text-green-700"
+                              : ""
+                          } `}
+                        >
+                          {tab.due}
+                        </td>
+                        <td className="px-6 py-4 flex items-center">
+                          <button
+                            onClick={() => {
+                              SetEditValue(tab);
+                              setShowModal(true);
+                            }}
+                            type="button"
+                            className="mr-3 inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          >
+                            <Edit />
+                          </button>
+                          {tab.progress == "in_progress" ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                changeStatus(tab, index, "done");
+                              }}
+                              className="mr-3 px-3 py-2 border w-20 text-white border-gray-300 rounded-md shadow-sm text-sm bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                            >
+                              Done
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                changeStatus(tab, index, "in_progress");
+                              }}
+                              className="mr-3 px-3 py-2 border w-20 text-white border-gray-300 rounded-md shadow-sm text-sm bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                            >
+                              Re open
+                            </button>
+                          )}
                           <button
                             type="button"
+                            className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                             onClick={() => {
-                              changeStatus(tab, index, "done");
+                              setShowDeleteModal(true);
+                              setDeleteItem(tab.summary);
                             }}
-                            className="mr-3 px-3 py-2 border w-20 text-white border-gray-300 rounded-md shadow-sm text-sm bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                           >
-                            Done
+                            <Trash />
                           </button>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              changeStatus(tab, index, "in_progress");
-                            }}
-                            className="mr-3 px-3 py-2 border w-20 text-white border-gray-300 rounded-md shadow-sm text-sm bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                          >
-                            Re open
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                          onClick={() => {
-                            setShowDeleteModal(true);
-                            setDeleteItem(tab.summary);
-                          }}
-                        >
-                          <Trash />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              )}
             </table>
           </div>
         </div>
