@@ -3,7 +3,7 @@ import { noop } from "../utils/";
 
 type ModalProps = {
   setShowDeleteModal: (string) => void;
-  onDelete: (event: MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onDelete: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 const DeleteModal: React.FunctionComponent<ModalProps> = ({
   setShowDeleteModal = noop,
